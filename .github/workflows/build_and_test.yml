@@ -57,5 +57,5 @@ jobs:
       if: startsWith(matrix.os, 'ubuntu-latest')
       run: |
         cd nDPI
-        make distclean && env CFLAGS='-Werror' ./autogen.sh --host=x86_64-w64-mingw32
+        make distclean && ./autogen.sh --host=x86_64-w64-mingw32
         make all
