@@ -23,53 +23,14 @@ jobs:
       if: startsWith(matrix.os, 'ubuntu')
       run: |
         sudo apt-get update
-        sudo apt-get install autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev
+        sudo apt-get install autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev
     - name: Installing macOS prerequisites
       if: startsWith(matrix.os, 'macOS')
       run: |
-        brew install autoconf automake libtool pkg-config gettext json-c
-    - name: Build library dependencies
-      # We choose to build dependencies for nDPI library (libgcrypt and libgpg-error) with fixed versions to ensure
-      # consistency across platforms
-      run: |
-        git clone --branch libgpg-error-1.42 https://github.com/gpg/libgpg-error
-        cd libgpg-error
-        ./autogen.sh
-        ./configure -enable-maintainer-mode --enable-static --enable-shared --with-pic --disable-doc --disable-nls
-        make
-        sudo make install
-        cd ..
-        rm -rf libgpg-error
-        git clone --branch libgcrypt-1.8.8 https://github.com/gpg/libgcrypt
-        cd libgcrypt
-        ./autogen.sh
-        ./configure -enable-maintainer-mode --enable-static --enable-shared --with-pic --disable-doc
-        make
-        sudo make install
-        cd ..
-        rm -rf libgcrypt
+        brew install autoconf automake libtool pkg-config gettext json-c libgcrypt
     - name: Build nDPI
       run: |
         git clone --branch dev https://github.com/ntop/nDPI.git
         cd nDPI
         env CFLAGS='-Werror' ./autogen.sh
         make all
-    - name: Build Fuzzers
-      if: startsWith(matrix.os, 'ubuntu-latest')
-      uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
-      with:
-        oss-fuzz-project-name: 'ndpi'
-        dry-run: false
-    - name: Run Fuzzers
-      uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
-      if: startsWith(matrix.os, 'ubuntu-latest')
-      with:
-        oss-fuzz-project-name: 'ndpi'
-        fuzz-seconds: 600
-        dry-run: false
-    - name: Upload Crash
-      uses: actions/upload-artifact@v1
-      if: startsWith(matrix.os, 'ubuntu-latest') || failure()
-      with:
-         name: artifacts
-         path: ./out/artifacts
