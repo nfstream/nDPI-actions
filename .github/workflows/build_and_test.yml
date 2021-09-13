@@ -36,5 +36,9 @@ jobs:
         make all
     - name: Test nDPI
       run: |
-        ls
+        cd nDPI
+        cd tests
+        ./do.sh
+        ./do-unit.sh
+        ./do-dga.sh
     
