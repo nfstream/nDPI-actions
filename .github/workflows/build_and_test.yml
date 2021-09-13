@@ -36,5 +36,5 @@ jobs:
         make all
     - name: Test nDPI
       run: |
-        - ./tests/do.sh.
+        - ./tests/do.sh
     
