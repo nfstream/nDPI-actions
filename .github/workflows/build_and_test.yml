@@ -43,7 +43,7 @@ jobs:
         brew install libgcrypt
     - name: Build nDPI
       run: |
-        git clone --branch dev https://github.com/ntop/nDPI.git
+        git clone --branch dev https://github.com/nfstream/nDPI.git
         cd nDPI
         env CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
         make all
