@@ -18,6 +18,10 @@ jobs:
       matrix:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["DISABLE_GCRYPT=y", "DISABLE_GCRYPT=n"]
+        include:
+          - os: "ubuntu-latest"
+            gcrypt: "DISABLE_GCRYPT=n"
+            cross: "arm mingw"
 
     steps:
     - uses: actions/checkout@v2
