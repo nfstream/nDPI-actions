@@ -20,8 +20,8 @@ jobs:
         gcrypt: ["DISABLE_GCRYPT=y", "DISABLE_GCRYPT=n"]
         include:
           - os: "ubuntu-latest"
-            gcrypt: "DISABLE_GCRYPT=n"
-            cross: "arm mingw"
+            gcrypt: "DISABLE_GCRYPT=y"
+            gcc: 8
 
     steps:
     - uses: actions/checkout@v2
