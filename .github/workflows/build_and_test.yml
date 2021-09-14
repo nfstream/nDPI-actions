@@ -11,7 +11,7 @@ on:
     types: [created]
 jobs:
   test:
-    name: ${{ matrix.os }} ${{ matrix.gcrypt }}
+    name: ${{ matrix.os }} ${{ matrix.gcrypt }} 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -54,14 +54,14 @@ jobs:
         ./do.sh
         ./do-unit.sh
         ./do-dga.sh
-    - name: Build nDPI (ARM)
-      if: startsWith(matrix.os, 'ubuntu-latest')
+    - name: Build nDPI [ARM] (runs only on ubuntu jobs)
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
         cd nDPI
         make distclean && env CFLAGS='-Werror' ./autogen.sh --host=arm-linux-gnueabihf --with-only-libndpi ${{ matrix.gcrypt }}
         make all
-    - name: Build nDPI (Mingw-w64)
-      if: startsWith(matrix.os, 'ubuntu-latest')
+    - name: Build nDPI [Mingw-w64] (runs only on ubuntu jobs)
+      if: startsWith(matrix.os, 'ubuntu')
       run: |
         cd nDPI
         make distclean && ./autogen.sh --host=x86_64-w64-mingw32 ${{ matrix.gcrypt }}
