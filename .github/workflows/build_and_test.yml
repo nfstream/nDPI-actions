@@ -17,7 +17,7 @@ jobs:
       fail-fast: true
       matrix:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
-        gcrypt: ["DISABLE_GCRYPT=y", "DISABLE_GCRYPT=n"]
+        gcrypt: ["--disable-gcrypt", ""]
 
     steps:
     - uses: actions/checkout@v2
@@ -43,10 +43,9 @@ jobs:
         brew install libgcrypt
     - name: Build nDPI
       run: |
-        export ${{ matrix.gcrypt }}
         git clone --branch dev https://github.com/ntop/nDPI.git
         cd nDPI
-        env CFLAGS='-Werror' ./autogen.sh --enable-debug-messages
+        env CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
         make all
     - name: Test nDPI
       run: |
@@ -59,11 +58,11 @@ jobs:
       if: startsWith(matrix.os, 'ubuntu-latest')
       run: |
         cd nDPI
-        make distclean && env CFLAGS='-Werror' ./autogen.sh --host=arm-linux-gnueabihf --with-only-libndpi
+        make distclean && env CFLAGS='-Werror' ./autogen.sh --host=arm-linux-gnueabihf --with-only-libndpi ${{ matrix.gcrypt }}
         make all
     - name: Build nDPI (Mingw-w64)
       if: startsWith(matrix.os, 'ubuntu-latest')
       run: |
         cd nDPI
-        make distclean && ./autogen.sh --host=x86_64-w64-mingw32
+        make distclean && ./autogen.sh --host=x86_64-w64-mingw32 ${{ matrix.gcrypt }}
         make all
