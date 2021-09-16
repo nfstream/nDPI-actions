@@ -14,11 +14,11 @@ jobs:
     name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} 
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
-        compiler: ["gcc-9", "clang-12", "gcc-8", "clang-7"]
+        compiler: ["gcc-9", "clang-11", "gcc-8", "clang-7"]
 
     steps:
     - uses: actions/checkout@v2
