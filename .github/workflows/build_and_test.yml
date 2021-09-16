@@ -11,14 +11,14 @@ on:
     types: [created]
 jobs:
   test:
-    name: ${{ matrix.os }} ${{ matrix.gcrypt }} 
+    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
       matrix:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
-        compiler: ["gcc", "clang", "gcc-8", "clang-7"]
+        compiler: ["gcc-9", "clang-12", "gcc-8", "clang-7"]
 
     steps:
     - uses: actions/checkout@v2
@@ -33,8 +33,7 @@ jobs:
     - name: Configure Ubuntu compiler
       if: startsWith(matrix.os, 'ubuntu')
       run: |
-        gcc --version
-        clang --version
+        sudo apt-get install ${{ matrix.compiler }} 
     - name: Install Ubuntu Prerequisites (libgcrypt)
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
