@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
-        compiler: ["g{0}-9", "clang{0}-8", "g{0}-8", "clang{}-7"]
+        compiler: ["g{0}-9", "clang{0}-8", "g{0}-8", "clang{0}-7"]
     steps:
     - uses: actions/checkout@v2
       with:
