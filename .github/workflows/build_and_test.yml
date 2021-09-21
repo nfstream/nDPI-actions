@@ -11,14 +11,14 @@ on:
     types: [created]
 jobs:
   test:
-    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ format(matrix.compiler, 'cc') }} 
+    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ format(matrix.compiler, 'cc-') }} 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
-        compiler: ["g{0}-9", "clang{0}-8", "g{0}-8", "clang{0}-7"]
+        compiler: ["g{0}9", "clang{0}-8", "g{0}8", "clang{0}-7"]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -32,8 +32,8 @@ jobs:
     - name: Configure Ubuntu compiler (GCC)
       if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'g')
       run: |
-        sudo apt-get install ${{ format(matrix.compiler, 'cc') }}
-        sudo apt-get install ${{ format(matrix.compiler, '++') }}
+        sudo apt-get install ${{ format(matrix.compiler, 'cc-') }}
+        sudo apt-get install ${{ format(matrix.compiler, '++-') }}
     - name: Configure Ubuntu compiler (CLANG)
       if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'c')
       run: |
@@ -47,11 +47,10 @@ jobs:
       if: startsWith(matrix.os, 'macOS')
       run: |
         brew install autoconf automake libtool pkg-config gettext json-c
-    - name: Configure MacOS compiler
-      if: startsWith(matrix.os, 'macOS')
+    - name: Configure MacOS compiler (GCC)
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.compiler, 'g')
       run: |
-        gcc --version
-        clang --version
+        brew install ${{ format(matrix.compiler, 'cc@') }}
     - name: Install MacOS Prerequisites (libgcrypt)
       if: startsWith(matrix.os, 'macOS') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
@@ -63,7 +62,7 @@ jobs:
       if: startsWith(matrix.compiler, 'g')
       run: |
         cd nDPI
-        env CC=${{ format(matrix.compiler, 'cc') }} CXX=${{ format(matrix.compiler, '++') }} CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
+        env CC=${{ format(matrix.compiler, 'cc-') }} CXX=${{ format(matrix.compiler, '++-') }} CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
     - name: Configure nDPI (CLANG)
       if: startsWith(matrix.compiler, 'c')
       run: |
