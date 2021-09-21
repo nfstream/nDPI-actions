@@ -23,16 +23,12 @@ jobs:
         include:
           - compiler: "g{0}-7"
             os: ubuntu-latest
-            experimental: true
           - compiler: "g{0}-10"
             os: ubuntu-latest
-            experimental: true
           - compiler:  "clang{0}-7"
             os: ubuntu-latest
-            experimental: true
           - compiler:  "clang{0}-12"
             os: ubuntu-latest
-            experimental: true
     steps:
     - uses: actions/checkout@v2
       with:
