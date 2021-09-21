@@ -68,7 +68,7 @@ jobs:
       run: |
         git clone --branch dev https://github.com/nfstream/nDPI.git
     - name: Configure nDPI
-      if: startsWith(matrix.compiler, 'default-compiler')
+      if: startsWith(matrix.compiler, 'default-cc')
       run: |
         cd nDPI
         env CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} 
