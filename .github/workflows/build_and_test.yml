@@ -31,8 +31,12 @@ jobs:
         sudo apt-get install gcc-arm-linux-gnueabihf gcc-mingw-w64 libc6-dev
     - name: Configure Ubuntu compiler
       if: startsWith(matrix.os, 'ubuntu')
+      env:
+        CC: ${{ format(matrix.compiler, 'cc') }}
+        CXX: ${{ format(matrix.compiler, '++') }}
       run: |
         sudo apt-get install ${{ format(matrix.compiler, 'cc') }}
+        sudo apt-get install ${{ format(matrix.compiler, '++') }}
     - name: Install Ubuntu Prerequisites (libgcrypt)
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
