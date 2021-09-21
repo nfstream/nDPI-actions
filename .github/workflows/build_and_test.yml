@@ -22,7 +22,7 @@ jobs:
         pcre: [""]
         maxminddb: [""]
         asan: [""]
-        # We test oldest (available) versus newest (available) compiler version on Ubuntu Latest -
+        # We test oldest (available) versus newest (available) compiler version on Ubuntu Latest
         include:
           - compiler: "gcc-7"
             os: ubuntu-latest
