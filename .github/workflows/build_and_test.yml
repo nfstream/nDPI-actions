@@ -99,7 +99,7 @@ jobs:
       run: |
         sudo apt-get install libpcre3-dev
     - name: Install Ubuntu Prerequisites (maxminddb)
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.pcre, '--with-maxminddb')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.maxminddb, '--with-maxminddb')
       run: |
         sudo apt-get install libmaxminddb-dev
     - name: Installing MacOS prerequisites
@@ -115,7 +115,7 @@ jobs:
       run: |
         brew install pcre
     - name: Install MacOS Prerequisites (maxminddb)
-      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.pcre, '--with-maxminddb')
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.maxminddb, '--with-maxminddb')
       run: |
         brew install libmaxminddb
     - name: Clone nDPI
