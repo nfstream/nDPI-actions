@@ -34,11 +34,19 @@ jobs:
       run: |
         sudo apt-get install ${{ format(matrix.compiler, 'cc') }}
         sudo apt-get install ${{ format(matrix.compiler, '++') }}
+        CC=${{ format(matrix.compiler, 'cc') }}
+        export CC
+        CXX=${{ format(matrix.compiler, '++') }}
+        export CXX
     - name: Configure Ubuntu compiler (CLANG)
       if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'c')
       run: |
         sudo apt-get install ${{ format(matrix.compiler, '') }}
         sudo apt-get install ${{ format(matrix.compiler, '++') }}
+        CC=${{ format(matrix.compiler, '') }}
+        export CC
+        CXX=${{ format(matrix.compiler, '++') }}
+        export CXX
     - name: Install Ubuntu Prerequisites (libgcrypt)
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
@@ -60,10 +68,6 @@ jobs:
       run: |
         git clone --branch dev https://github.com/nfstream/nDPI.git
         cd nDPI
-        CC=${{ format(matrix.compiler, 'cc') }}
-        export CC
-        CXX=${{ format(matrix.compiler, '++') }}
-        export CXX
         env CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
         make all
     - name: Test nDPI 
