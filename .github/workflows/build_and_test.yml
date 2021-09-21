@@ -19,17 +19,18 @@ jobs:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
         compiler: ["default-cc"]
+        # We test oldest (available) versus newest (available) compiler version on Ubuntu Latest
         include:
-          - compiler: "g{0}-8"
+          - compiler: "g{0}-7"
             os: ubuntu-latest
             experimental: true
-          - compiler: "g{0}-9"
+          - compiler: "g{0}-10"
             os: ubuntu-latest
             experimental: true
           - compiler:  "clang{0}-7"
             os: ubuntu-latest
             experimental: true
-          - compiler:  "clang{0}-8"
+          - compiler:  "clang{0}-12"
             os: ubuntu-latest
             experimental: true
     steps:
