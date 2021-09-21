@@ -34,19 +34,11 @@ jobs:
       run: |
         sudo apt-get install ${{ format(matrix.compiler, 'cc') }}
         sudo apt-get install ${{ format(matrix.compiler, '++') }}
-        CC=${{ format(matrix.compiler, 'cc') }}
-        export CC
-        CXX=${{ format(matrix.compiler, '++') }}
-        export CXX
     - name: Configure Ubuntu compiler (CLANG)
       if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'c')
       run: |
         sudo apt-get install ${{ format(matrix.compiler, '') }}
         sudo apt-get install ${{ format(matrix.compiler, '++') }}
-        CC=${{ format(matrix.compiler, '') }}
-        export CC
-        CXX=${{ format(matrix.compiler, '++') }}
-        export CXX
     - name: Install Ubuntu Prerequisites (libgcrypt)
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
@@ -64,12 +56,23 @@ jobs:
       if: startsWith(matrix.os, 'macOS') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
         brew install libgcrypt
-    - name: Build nDPI
+    - name: Clone nDPI
       run: |
         git clone --branch dev https://github.com/nfstream/nDPI.git
+    - name: Configure nDPI (GCC)
+      if: startsWith(matrix.compiler, 'g')
+      run: |
         cd nDPI
         env CC=${{ format(matrix.compiler, 'cc') }} CXX=${{ format(matrix.compiler, '++') }} CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
-        make all
+    - name: Configure nDPI (CLANG)
+      if: startsWith(matrix.compiler, 'c')
+      run: |
+        cd nDPI
+        env CC=${{ format(matrix.compiler, '') }} CXX=${{ format(matrix.compiler, '++') }} CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}      
+    - name: Compile nDPI
+      run: |
+        cd nDPI
+        make all 
     - name: Test nDPI 
       run: |
         cd nDPI
