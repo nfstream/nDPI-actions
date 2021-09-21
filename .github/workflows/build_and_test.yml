@@ -60,7 +60,11 @@ jobs:
       run: |
         git clone --branch dev https://github.com/nfstream/nDPI.git
         cd nDPI
-        env CFLAGS='-Werror' CC=${{ format(matrix.compiler, 'cc') }} && CXX=${{ format(matrix.compiler, '++') }} ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
+        CC=${{ format(matrix.compiler, 'cc') }}
+        export CC
+        CXX=${{ format(matrix.compiler, '++') }}
+        export CXX
+        env CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
         make all
     - name: Test nDPI 
       run: |
