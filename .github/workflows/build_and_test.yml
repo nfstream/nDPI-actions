@@ -58,11 +58,17 @@ jobs:
     - name: Clone nDPI
       run: |
         git clone --branch dev https://github.com/nfstream/nDPI.git
-    - name: Configure nDPI (GCC)
-      if: startsWith(matrix.compiler, 'g')
+    - name: Configure nDPI (GCC) on Ubuntu
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'g')
       run: |
         cd nDPI
         env CC=${{ format(matrix.compiler, 'cc-') }} CXX=${{ format(matrix.compiler, '++-') }} CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}
+    - name: Configure nDPI (GCC) on MacOS
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.compiler, 'g')
+      run: |
+        ls /usr/local/bin/
+        cd nDPI
+        env CC=CC=/usr/local/bin/${{ format(matrix.compiler, 'cc-') }} CXX=CC=/usr/local/bin/${{ format(matrix.compiler, '++-') }} CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }}    
     - name: Configure nDPI (CLANG)
       if: startsWith(matrix.compiler, 'c')
       run: |
