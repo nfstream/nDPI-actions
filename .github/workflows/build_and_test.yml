@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
-        compiler: ["g{0}-9", "clang-8", "g{0}-8", "clang-7"]
+        compiler: ["g{0}-9", "clang{0}-8", "g{0}-8", "clang{}-7"]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -29,14 +29,24 @@ jobs:
         sudo apt-get update
         sudo apt-get install autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev
         sudo apt-get install gcc-arm-linux-gnueabihf gcc-mingw-w64 libc6-dev
-    - name: Configure Ubuntu compiler
-      if: startsWith(matrix.os, 'ubuntu')
-      env:
-        CC: ${{ format(matrix.compiler, 'cc') }}
-        CXX: ${{ format(matrix.compiler, '++') }}
+    - name: Configure Ubuntu compiler (GCC)
+      if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'g')
       run: |
         sudo apt-get install ${{ format(matrix.compiler, 'cc') }}
         sudo apt-get install ${{ format(matrix.compiler, '++') }}
+        CC=${{ format(matrix.compiler, 'cc') }}
+        export CC
+        CXX=${{ format(matrix.compiler, '++') }}
+        export CXX
+    - name: Configure Ubuntu compiler (CLANG)
+      if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'c')
+      run: |
+        sudo apt-get install ${{ format(matrix.compiler, '') }}
+        sudo apt-get install ${{ format(matrix.compiler, '++') }}
+        CC=${{ format(matrix.compiler, '') }}
+        export CC
+        CXX=${{ format(matrix.compiler, '++') }}
+        export CXX
     - name: Install Ubuntu Prerequisites (libgcrypt)
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
