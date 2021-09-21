@@ -11,7 +11,7 @@ on:
     types: [created]
 jobs:
   test:
-    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} 
+    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} ${{ matrix.sanitizer }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -19,20 +19,59 @@ jobs:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
         compiler: ["default-cc"]
+        pcre: [""]
+        maxminddb: [""]
+        sanitizer: [""]
         # We test oldest (available) versus newest (available) compiler version on Ubuntu Latest
         include:
           - compiler: "gcc-7"
             os: ubuntu-latest
             gcrypt: ""
+            pcre: "with-pcre"
+            maxminddb: "with-maxminddb"
+            sanitizer: "with-sanitizer"
           - compiler: "gcc-10"
             os: ubuntu-latest
             gcrypt: ""
+            pcre: "with-pcre"
+            maxminddb: "with-maxminddb"
+            sanitizer: "with-sanitizer"
           - compiler:  "clang-7"
             os: ubuntu-latest
             gcrypt: ""
+            pcre: "with-pcre"
+            maxminddb: "with-maxminddb"
+            sanitizer: "with-sanitizer"
           - compiler:  "clang-12"
             os: ubuntu-latest
             gcrypt: ""
+            pcre: "with-pcre"
+            maxminddb: "with-maxminddb"
+            sanitizer: "with-sanitizer"
+          - compiler: "default-cc"
+            os: ubuntu-latest
+            gcrypt: ""
+            pcre: "with-pcre"
+            maxminddb: "with-maxminddb"
+            sanitizer: "with-sanitizer"
+          - compiler: "default-cc"
+            os: ubuntu-18.04
+            gcrypt: ""
+            pcre: "with-pcre"
+            maxminddb: "with-maxminddb"
+            sanitizer: "with-sanitizer"
+          - compiler:  "default-cc"
+            os: macOS-latest
+            gcrypt: ""
+            pcre: "with-pcre"
+            maxminddb: "with-maxminddb"
+            sanitizer: "with-sanitizer"
+          - compiler:  "default-cc"
+            os: macos-11
+            gcrypt: ""
+            pcre: "with-pcre"
+            maxminddb: "with-maxminddb"
+            sanitizer: "with-sanitizer"
     steps:
     - uses: actions/checkout@v2
       with:
@@ -55,6 +94,14 @@ jobs:
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
         sudo apt-get install libgcrypt20-dev
+    - name: Install Ubuntu Prerequisites (libpcre)
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.pcre, '--with-pcre')
+      run: |
+        sudo apt-get install libpcre3-dev
+    - name: Install Ubuntu Prerequisites (maxminddb)
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.pcre, '--with-maxminddb')
+      run: |
+        sudo apt-get install libmaxminddb-dev
     - name: Installing MacOS prerequisites
       if: startsWith(matrix.os, 'macOS')
       run: |
@@ -63,6 +110,14 @@ jobs:
       if: startsWith(matrix.os, 'macOS') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
         brew install libgcrypt
+    - name: Install MacOS Prerequisites (libpcre)
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.pcre, '--with-pcre')
+      run: |
+        brew install pcre
+    - name: Install MacOS Prerequisites (maxminddb)
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.pcre, '--with-maxminddb')
+      run: |
+        brew install libmaxminddb
     - name: Clone nDPI
       run: |
         git clone --branch dev https://github.com/nfstream/nDPI.git
