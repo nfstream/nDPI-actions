@@ -18,8 +18,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
-        compiler: ["gcc-9", "clang-8", "gcc-8", "clang-7"]
-
+        compiler: ["g{0}-9", "clang-8", "g{0}-8", "clang-7"]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -33,7 +32,7 @@ jobs:
     - name: Configure Ubuntu compiler
       if: startsWith(matrix.os, 'ubuntu')
       run: |
-        sudo apt-get install ${{ matrix.compiler }} 
+        sudo apt-get install ${{ format(${{ matrix.compiler }} , 'cc') }}
     - name: Install Ubuntu Prerequisites (libgcrypt)
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt')
       run: |
