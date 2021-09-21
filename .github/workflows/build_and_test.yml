@@ -11,7 +11,7 @@ on:
     types: [created]
 jobs:
   test:
-    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} 
+    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ format(matrix.compiler, 'cc') }} 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
