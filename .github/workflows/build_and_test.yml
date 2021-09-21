@@ -80,7 +80,13 @@ jobs:
     - name: Compile nDPI
       run: |
         cd nDPI
-        make all 
+        make all
+        cd example
+        make ndpiSimpleIntegration
+        cd ..
+        cd python
+        make
+        cd ..
     - name: Test nDPI 
       run: |
         cd nDPI
