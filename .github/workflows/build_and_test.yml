@@ -195,5 +195,8 @@ jobs:
           make ndpiSimpleIntegration &&
           cd ../python &&
           make &&
-          cd ..
+          cd ../tests &&
+          ./do.sh &&
+          ./do-unit.sh
+          ./do-dga.sh
           "
