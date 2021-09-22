@@ -89,6 +89,15 @@ jobs:
             maxminddb: "--with-maxminddb"
             msan: "" # Disable sanitizer on macos
     steps:
+    - name: Setup QEMU
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm')
+      run: |
+        docker run --rm --privileged multiarch/qemu-user-static:register --reset
+    - name: Display platform
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm')
+      uses: docker://multiarch/ubuntu-core:arm64-bionic
+      with:
+        args: 'uname -a'
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
