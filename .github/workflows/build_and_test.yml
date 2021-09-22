@@ -92,6 +92,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    - name: Clone nDPI
+      run: |
+        git clone --branch dev https://github.com/ntop/nDPI.git
     - name: Install Ubuntu Prerequisites
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'x86_64')
       run: |
@@ -134,9 +137,6 @@ jobs:
       if: startsWith(matrix.os, 'macOS') && startsWith(matrix.maxminddb, '--with-maxminddb') && startsWith(matrix.platform, 'x86_64')
       run: |
         brew install libmaxminddb
-    - name: Clone nDPI
-      run: |
-        git clone --branch dev https://github.com/nfstream/nDPI.git
     - name: Configure nDPI on Ubuntu
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'default-cc') && startsWith(matrix.platform, 'x86_64')
       run: |
