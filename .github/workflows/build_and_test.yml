@@ -226,7 +226,7 @@ jobs:
           "
     - name: Configure, compile and test using qemu for the specified architecture (armhf - little endian)
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'armhf')
-      uses: docker://multiarch/ubuntu-core:arm64-bionic
+      uses: docker://multiarch/ubuntu-core:armhf-bionic
       with:
         args: >
           bash -c
