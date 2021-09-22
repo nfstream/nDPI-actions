@@ -196,15 +196,6 @@ jobs:
           "uname -a &&
           lscpu | grep Endian
           "
-    - name: Display qemu specified architecture (armhf - little endian)
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'armhf')
-      uses: docker://multiarch/ubuntu-core:armhf-bionic
-      with:
-        args: >
-          bash -c
-          "uname -a &&
-          lscpu | grep Endian
-          "
     - name: Configure, compile and test using qemu for the specified architecture (arm64 - little endian)
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
       uses: docker://multiarch/ubuntu-core:arm64-bionic
@@ -223,6 +214,15 @@ jobs:
           cd ../tests &&
           ./do.sh &&
           ./do-unit.sh
+          "
+    - name: Display qemu specified architecture (armhf - little endian)
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'armhf')
+      uses: docker://multiarch/ubuntu-core:armhf-bionic
+      with:
+        args: >
+          bash -c
+          "uname -a &&
+          lscpu | grep Endian
           "
     - name: Configure, compile and test using qemu for the specified architecture (armhf - little endian)
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'armhf')
