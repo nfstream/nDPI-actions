@@ -65,13 +65,13 @@ jobs:
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
-            msan: "--with-sanitizer"
+            msan: "" # Disable sanitizer on macos
           - compiler:  "default-cc"
             os: macos-11
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
-            msan: "--with-sanitizer"
+            msan: "" # Disable sanitizer on macos
     steps:
     - uses: actions/checkout@v2
       with:
@@ -130,7 +130,7 @@ jobs:
       if: startsWith(matrix.os, 'macOS') && startsWith(matrix.compiler, 'default-cc')
       run: |
         cd nDPI
-        env CC=clang CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.pcre }} ${{ matrix.maxminddb }}
+        env CC=clang CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }}
     - name: Configure nDPI with specified GCC version on Ubuntu
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'g')
       run: |
@@ -165,7 +165,7 @@ jobs:
         make distclean && env CFLAGS='-Werror' ./autogen.sh --host=arm-linux-gnueabihf --with-only-libndpi ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }}
         make all
     - name: Build nDPI [Mingw-w64] (runs only on ubuntu jobs)
-      if: startsWith(matrix.os, 'ubuntu')
+      if: startsWith(matrix.os, 'ubuntu') # Disable sanitizer on Mingw-w64
       run: |
         cd nDPI
         make distclean && ./autogen.sh --host=x86_64-w64-mingw32 ${{ matrix.gcrypt }} ${{ matrix.pcre }} ${{ matrix.maxminddb }}
