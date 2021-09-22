@@ -197,6 +197,5 @@ jobs:
           make &&
           cd ../tests &&
           ./do.sh &&
-          ./do-unit.sh &&
-          ./do-dga.sh
+          ./do-unit.sh
           "
