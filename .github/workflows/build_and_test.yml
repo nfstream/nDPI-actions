@@ -87,10 +87,17 @@ jobs:
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
-            msan: "" # Disable sanitizer on macos
+            msan: "--with-sanitizer"
+          - compiler:  "default-cc"
+            os: ubuntu-latest
+            arch: "armhf"
+            gcrypt: ""
+            pcre: "--with-pcre"
+            maxminddb: "--with-maxminddb"
+            msan: "--with-sanitizer"
     steps:
     - name: Setup multiarch/qemu-user-static
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
+      if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.arch, 'x86_64')
       run: |
         docker run --rm --privileged multiarch/qemu-user-static:register --reset
     - uses: actions/checkout@v2
@@ -180,7 +187,7 @@ jobs:
         ./do.sh
         ./do-unit.sh
         ./do-dga.sh
-    - name: Display qemu specified architecture
+    - name: Display qemu specified architecture (arm64 - little endian)
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
       uses: docker://multiarch/ubuntu-core:arm64-bionic
       with:
@@ -189,8 +196,36 @@ jobs:
           "uname -a &&
           lscpu | grep Endian
           "
-    - name: Configure, compile and test using qemu for the specified architecture
+    - name: Display qemu specified architecture (armhf - little endian)
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'armhf')
+      uses: docker://multiarch/ubuntu-core:armhf-bionic
+      with:
+        args: >
+          bash -c
+          "uname -a &&
+          lscpu | grep Endian
+          "
+    - name: Configure, compile and test using qemu for the specified architecture (arm64 - little endian)
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
+      uses: docker://multiarch/ubuntu-core:arm64-bionic
+      with:
+        args: >
+          bash -c
+          "apt-get -y update &&
+          apt-get -y install git autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
+          cd nDPI &&
+          env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} &&
+          make all &&
+          cd example &&
+          make ndpiSimpleIntegration &&
+          cd ../python &&
+          make &&
+          cd ../tests &&
+          ./do.sh &&
+          ./do-unit.sh
+          "
+    - name: Configure, compile and test using qemu for the specified architecture (armhf - little endian)
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'armhf')
       uses: docker://multiarch/ubuntu-core:arm64-bionic
       with:
         args: >
