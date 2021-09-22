@@ -180,12 +180,20 @@ jobs:
         ./do.sh
         ./do-unit.sh
         ./do-dga.sh
-    - name: Build and Test on arm64
+    - name: Build and test on arm64
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm64')
       uses: docker://multiarch/ubuntu-core:arm64-bionic
       with:
         args: >
           bash -c
           "apt-get -y update &&
-          apt-get -y install autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev
+          apt-get -y install autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev
+          cd nDPI
+          env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }}
+          make all
+          cd example
+          make ndpiSimpleIntegration
+          cd ../python
+          make
+          cd ..
           "
