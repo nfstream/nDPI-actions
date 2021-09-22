@@ -87,14 +87,14 @@ jobs:
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
-            msan: ""
+            msan: "" # Disable sanitizer on arm64
           - compiler:  "default-cc"
             os: ubuntu-latest
             arch: "armhf"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
-            msan: ""
+            msan: "--with-sanitizer"
     steps:
     - name: Setup multiarch/qemu-user-static
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.arch, 'x86_64')
@@ -105,7 +105,7 @@ jobs:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     - name: Clone nDPI
       run: |
-        git clone --branch dev https://github.com/ntop/nDPI.git
+        git clone --branch dev https://github.com/nfstream/nDPI.git
     - name: Install Ubuntu prerequisites
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'x86_64')
       run: |
