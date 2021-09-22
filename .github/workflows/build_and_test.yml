@@ -87,14 +87,14 @@ jobs:
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
-            msan: "--with-sanitizer"
+            msan: ""
           - compiler:  "default-cc"
-            os: ubuntu-18.04
+            os: ubuntu-latest
             arch: "armhf"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
-            msan: "--with-sanitizer"
+            msan: ""
     steps:
     - name: Setup multiarch/qemu-user-static
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.arch, 'x86_64')
