@@ -189,11 +189,12 @@ jobs:
           "apt-get -y update &&
           apt-get -y install autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
           cd nDPI &&
-          env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} &&
-          make all &&
-          cd example &&
-          make ndpiSimpleIntegration &&
-          cd ../python &&
-          make &&
-          cd ..
+          git log src/include/ndpi_typedefs.h|wc -l
           "
+#          env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} &&
+#          make all &&
+#          cd example &&
+#          make ndpiSimpleIntegration &&
+#          cd ../python &&
+#          make &&
+#          cd ..
