@@ -11,7 +11,7 @@ on:
     types: [created]
 jobs:
   test:
-    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} ${{ matrix.sanitizer }}
+    name: ${{ matrix.os }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} ${{ matrix.msan }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
