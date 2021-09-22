@@ -131,7 +131,22 @@ jobs:
       with:
         args: >
           bash -c
-          "apt-get -y install libgcrypt20-dev"
+          "git clone --branch libgpg-error-1.42 https://github.com/gpg/libgpg-error &&
+          cd libgpg-error && 
+          ./autogen.sh &&
+          ./configure -enable-maintainer-mode --enable-static --enable-shared --with-pic --disable-doc --disable-nls &&
+          make &&
+          make install &&
+          cd .. &&
+          rm -rf libgpg-error &&
+          git clone --branch libgcrypt-1.8.8 https://github.com/gpg/libgcrypt &&
+          cd libgcrypt &&
+          ./autogen.sh &&
+          ./configure -enable-maintainer-mode --enable-static --enable-shared --with-pic --disable-doc &&
+          make &&
+          sudo make install &&
+          cd .. &&
+          rm -rf libgcrypt"
     - name: Install Ubuntu Prerequisites (libpcre)
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.pcre, '--with-pcre') && startsWith(matrix.platform, 'x86_64')
       run: |
