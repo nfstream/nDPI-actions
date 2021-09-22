@@ -98,7 +98,7 @@ jobs:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     - name: Clone nDPI
       run: |
-        git clone --branch dev https://github.com/ntop/nDPI.git
+        git clone --branch dev https://github.com/nfstream/nDPI.git
     - name: Install Ubuntu prerequisites
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'x86_64')
       run: |
