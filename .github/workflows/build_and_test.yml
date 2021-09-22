@@ -83,14 +83,14 @@ jobs:
             msan: "" # Disable sanitizer on macos
           - compiler:  "default-cc"
             os: ubuntu-latest
-            platform: "arm"
+            platform: "arm64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "" # Disable sanitizer on macos
     steps:
     - name: Setup multiarch/qemu-user-static
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm64')
       run: |
         docker run --rm --privileged multiarch/qemu-user-static:register --reset
     - uses: actions/checkout@v2
@@ -100,7 +100,7 @@ jobs:
       run: |
         git clone --branch dev https://github.com/ntop/nDPI.git
     - name: Install qemu prerequisites
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm64')
       uses: docker://multiarch/ubuntu-core:arm64-bionic
       with:
         args: >
@@ -125,6 +125,13 @@ jobs:
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt') && startsWith(matrix.platform, 'x86_64')
       run: |
         sudo apt-get install libgcrypt20-dev
+    - name: Install qemu prerequisites (libgcrypt)
+      if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt') && startsWith(matrix.platform, 'arm64')
+      uses: docker://multiarch/ubuntu-core:arm64-bionic
+      with:
+        args: >
+          bash -c
+          "apt-get -y install libgcrypt20-dev"
     - name: Install Ubuntu Prerequisites (libpcre)
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.pcre, '--with-pcre') && startsWith(matrix.platform, 'x86_64')
       run: |
