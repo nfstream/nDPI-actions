@@ -92,7 +92,7 @@ jobs:
     - name: Setup multiarch/qemu-user-static
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm64')
       run: |
-        docker run --rm --privileged multiarch/qemu-user-static:register --reset
+        docker run --rm --privileged multiarch/qemu-user-static:register --reset -p yes
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
