@@ -101,7 +101,7 @@ jobs:
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
-            msan: ""
+            msan: "--with-sanitizer"
     steps:
     - name: Setup multiarch/qemu-user-static
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.arch, 'x86_64')
