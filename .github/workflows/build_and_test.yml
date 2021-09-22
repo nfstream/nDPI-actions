@@ -98,7 +98,7 @@ jobs:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
     - name: Clone nDPI
       run: |
-        git clone --branch dev https://github.com/nfstream/nDPI.git
+        git clone --branch dev https://github.com/ntop/nDPI.git
     - name: Install Ubuntu prerequisites
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'x86_64')
       run: |
@@ -187,14 +187,13 @@ jobs:
         args: >
           bash -c
           "apt-get -y update &&
-          apt-get -y install autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
+          apt-get -y install git autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
           cd nDPI &&
-          git log src/include/ndpi_typedefs.h|wc -l
+          env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} &&
+          make all &&
+          cd example &&
+          make ndpiSimpleIntegration &&
+          cd ../python &&
+          make &&
+          cd ..
           "
-#          env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} &&
-#          make all &&
-#          cd example &&
-#          make ndpiSimpleIntegration &&
-#          cd ../python &&
-#          make &&
-#          cd ..
