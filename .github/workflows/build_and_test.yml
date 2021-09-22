@@ -11,7 +11,7 @@ on:
     types: [created]
 jobs:
   test:
-    name: ${{ matrix.os }} ${{ matrix.platform }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} ${{ matrix.msan }}
+    name: ${{ matrix.os }} ${{ matrix.arch }} ${{ matrix.gcrypt }} ${{ matrix.compiler }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} ${{ matrix.msan }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -19,7 +19,7 @@ jobs:
         os: ["ubuntu-latest", "ubuntu-18.04", "macOS-latest", "macos-11"]
         gcrypt: ["--disable-gcrypt", ""]
         compiler: ["default-cc"]
-        platform: ["x86_64"]
+        arch: ["x86_64"]
         pcre: [""]
         maxminddb: [""]
         msan: [""]
@@ -27,70 +27,70 @@ jobs:
         include:
           - compiler: "gcc-7"
             os: ubuntu-latest
-            platform: "x86_64"
+            arch: "x86_64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "--with-sanitizer"
           - compiler: "gcc-10"
             os: ubuntu-latest
-            platform: "x86_64"
+            arch: "x86_64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "--with-sanitizer"
           - compiler:  "clang-7"
             os: ubuntu-latest
-            platform: "x86_64"
+            arch: "x86_64"
             gcrypt: "x86_64"
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "--with-sanitizer"
           - compiler:  "clang-12"
             os: ubuntu-latest
-            platform: "x86_64"
+            arch: "x86_64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "--with-sanitizer"
           - compiler: "default-cc"
             os: ubuntu-latest
-            platform: "x86_64"
+            arch: "x86_64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "--with-sanitizer"
           - compiler: "default-cc"
             os: ubuntu-18.04
-            platform: "x86_64"
+            arch: "x86_64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "--with-sanitizer"
           - compiler:  "default-cc"
             os: macOS-latest
-            platform: "x86_64"
+            arch: "x86_64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "" # Disable sanitizer on macos
           - compiler:  "default-cc"
             os: macos-11
-            platform: "x86_64"
+            arch: "x86_64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "" # Disable sanitizer on macos
           - compiler:  "default-cc"
             os: ubuntu-latest
-            platform: "arm64"
+            arch: "arm64"
             gcrypt: ""
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "" # Disable sanitizer on macos
     steps:
     - name: Setup multiarch/qemu-user-static
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm64')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
       run: |
         docker run --rm --privileged multiarch/qemu-user-static:register --reset
     - uses: actions/checkout@v2
@@ -100,69 +100,69 @@ jobs:
       run: |
         git clone --branch dev https://github.com/ntop/nDPI.git
     - name: Install Ubuntu prerequisites
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'x86_64')
       run: |
         sudo apt-get update
         sudo apt-get install autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev
         sudo apt-get install gcc-mingw-w64
     - name: Configure Ubuntu compiler (GCC)
-      if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'gcc') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'gcc') && startsWith(matrix.arch, 'x86_64')
       run: |
         sudo apt-get install ${{ matrix.compiler }}
     - name: Configure Ubuntu compiler (CLANG)
-      if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'clang') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu')  && startsWith(matrix.compiler, 'clang') && startsWith(matrix.arch, 'x86_64')
       run: |
         sudo apt-get install ${{ matrix.compiler }}
     - name: Install Ubuntu Prerequisites (libgcrypt)
-      if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.gcrypt, '--disable-gcrypt') && startsWith(matrix.arch, 'x86_64')
       run: |
         sudo apt-get install libgcrypt20-dev
     - name: Install Ubuntu Prerequisites (libpcre)
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.pcre, '--with-pcre') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.pcre, '--with-pcre') && startsWith(matrix.arch, 'x86_64')
       run: |
         sudo apt-get install libpcre3-dev
     - name: Install Ubuntu Prerequisites (maxminddb)
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.maxminddb, '--with-maxminddb') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.maxminddb, '--with-maxminddb') && startsWith(matrix.arch, 'x86_64')
       run: |
         sudo apt-get install libmaxminddb-dev
     - name: Installing MacOS prerequisites
-      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.arch, 'x86_64')
       run: |
         brew install autoconf automake libtool pkg-config gettext json-c
     - name: Install MacOS Prerequisites (libgcrypt)
-      if: startsWith(matrix.os, 'macOS') && !startsWith(matrix.gcrypt, '--disable-gcrypt') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'macOS') && !startsWith(matrix.gcrypt, '--disable-gcrypt') && startsWith(matrix.arch, 'x86_64')
       run: |
         brew install libgcrypt
     - name: Install MacOS Prerequisites (libpcre)
-      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.pcre, '--with-pcre') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.pcre, '--with-pcre') && startsWith(matrix.arch, 'x86_64')
       run: |
         brew install pcre
     - name: Install MacOS Prerequisites (maxminddb)
-      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.maxminddb, '--with-maxminddb') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.maxminddb, '--with-maxminddb') && startsWith(matrix.arch, 'x86_64')
       run: |
         brew install libmaxminddb
     - name: Configure nDPI on Ubuntu
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'default-cc') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'default-cc') && startsWith(matrix.arch, 'x86_64')
       run: |
         cd nDPI
         env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }}
     - name: Configure nDPI on MacOS
-      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.compiler, 'default-cc') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'macOS') && startsWith(matrix.compiler, 'default-cc') && startsWith(matrix.arch, 'x86_64')
       run: |
         cd nDPI
         env CC=clang CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }}
     - name: Configure nDPI with specified GCC version on Ubuntu
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'gcc') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'gcc') && startsWith(matrix.arch, 'x86_64')
       run: |
         cd nDPI
         env CC=${{ matrix.compiler }} CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} 
     - name: Configure nDPI with specified CLANG on Ubuntu
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'clang') && startsWith(matrix.platform, 'x86_64')
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.compiler, 'clang') && startsWith(matrix.arch, 'x86_64')
       run: |
         cd nDPI
         env CC=${{ matrix.compiler }} CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }}
     - name: Compile nDPI
-      if: startsWith(matrix.platform, 'x86_64') 
+      if: startsWith(matrix.arch, 'x86_64') 
       run: |
         cd nDPI
         make all
@@ -173,21 +173,30 @@ jobs:
         make
         cd ..
     - name: Test nDPI
-      if : startsWith(matrix.platform, 'x86_64')
+      if : startsWith(matrix.arch, 'x86_64')
       run: |
         cd nDPI
         cd tests
         ./do.sh
         ./do-unit.sh
         ./do-dga.sh
-    - name: Build and test on arm64
-      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.platform, 'arm64')
-      uses: docker://multiarch/ubuntu-core:arm64-bionic
+    - name: Display qemu specified architecture
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
+      uses: docker://multiarch/ubuntu-core:${{ matrix.arch }}-bionic
+      with:
+        args: >
+          bash -c
+          "uname -a &&
+          lscpu | grep Endian
+          "
+    - name: Configure, compile and test using qemu for the specified architecture
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
+      uses: docker://multiarch/ubuntu-core:${{ matrix.arch }}-bionic
       with:
         args: >
           bash -c
           "apt-get -y update &&
-          apt-get -y install git python3.6 autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
+          apt-get -y install git autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
           cd nDPI &&
           env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} &&
           make all &&
@@ -197,6 +206,5 @@ jobs:
           make &&
           cd ../tests &&
           ./do.sh &&
-          ./do-unit.sh &&
-          ./do-dga.sh
+          ./do-unit.sh
           "
