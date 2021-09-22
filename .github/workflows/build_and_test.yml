@@ -95,6 +95,13 @@ jobs:
             pcre: "--with-pcre"
             maxminddb: "--with-maxminddb"
             msan: "--with-sanitizer"
+          - compiler:  "default-cc"
+            os: ubuntu-latest
+            arch: "s390x"
+            gcrypt: ""
+            pcre: "--with-pcre"
+            maxminddb: "--with-maxminddb"
+            msan: ""
     steps:
     - name: Setup multiarch/qemu-user-static
       if: startsWith(matrix.os, 'ubuntu') && !startsWith(matrix.arch, 'x86_64')
@@ -227,6 +234,34 @@ jobs:
     - name: Configure, compile and test using qemu for the specified architecture (armhf - little endian)
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'armhf')
       uses: docker://multiarch/ubuntu-core:armhf-bionic
+      with:
+        args: >
+          bash -c
+          "apt-get -y update &&
+          apt-get -y install git autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
+          cd nDPI &&
+          env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} &&
+          make all &&
+          cd example &&
+          make ndpiSimpleIntegration &&
+          cd ../python &&
+          make &&
+          cd ../tests &&
+          ./do.sh &&
+          ./do-unit.sh
+          "
+    - name: Display qemu specified architecture (s390x - big endian)
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 's390x')
+      uses: docker://multiarch/ubuntu-core:s390x-bionic
+      with:
+        args: >
+          bash -c
+          "uname -a &&
+          lscpu | grep Endian
+          "
+    - name: Configure, compile and test using qemu for the specified architecture (s390x - big endian)
+      if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 's390x')
+      uses: docker://multiarch/ubuntu-core:s390x-bionic
       with:
         args: >
           bash -c
