@@ -182,7 +182,7 @@ jobs:
         ./do-dga.sh
     - name: Display qemu specified architecture
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
-      uses: docker://multiarch/ubuntu-core:${{ matrix.arch }}-bionic
+      uses: docker://multiarch/ubuntu-core:arm64-bionic
       with:
         args: >
           bash -c
@@ -191,7 +191,7 @@ jobs:
           "
     - name: Configure, compile and test using qemu for the specified architecture
       if: startsWith(matrix.os, 'ubuntu') && startsWith(matrix.arch, 'arm64')
-      uses: docker://multiarch/ubuntu-core:${{ matrix.arch }}-bionic
+      uses: docker://multiarch/ubuntu-core:arm64-bionic
       with:
         args: >
           bash -c
