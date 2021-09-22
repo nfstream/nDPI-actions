@@ -187,7 +187,7 @@ jobs:
         args: >
           bash -c
           "apt-get -y update &&
-          apt-get -y install git autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
+          apt-get -y install git python3.6 autoconf automake libtool pkg-config gettext libjson-c-dev flex bison libpcap-dev libgcrypt20-dev libpcre3-dev libmaxminddb-dev &&
           cd nDPI &&
           env CC=gcc CFLAGS='-Werror' ./autogen.sh --enable-debug-messages ${{ matrix.gcrypt }} ${{ matrix.msan }} ${{ matrix.pcre }} ${{ matrix.maxminddb }} &&
           make all &&
@@ -197,5 +197,6 @@ jobs:
           make &&
           cd ../tests &&
           ./do.sh &&
-          ./do-unit.sh
+          ./do-unit.sh &&
+          ./do-dga.sh
           "
