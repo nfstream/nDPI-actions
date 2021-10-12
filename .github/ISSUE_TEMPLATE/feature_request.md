@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for nDPI
+about: Suggest an idea or a feature for nDPI
 title: ''
 labels: 'enhancement'
 assignees: ''
