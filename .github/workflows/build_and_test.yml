@@ -275,6 +275,5 @@ jobs:
           cd ../python &&
           make &&
           cd ../tests &&
-          ./do.sh &&
           ./do-unit.sh
           "
